@@ -1,44 +1,106 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Моё приглашение</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-      font-family: Arial, sans-serif;
-    }
-
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 12px;
-      background: #e91e63;
-      color: white;
-      font-size: 16px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Card</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#1a1235,#38205d,#5b2a86);
+  overflow:hidden;
+  color:#fff;
+  height:100vh;
+}
+.screen{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  text-align:center; padding:20px;
+  opacity:0; pointer-events:none;
+  transition:opacity .8s ease;
+}
+.show{opacity:1; pointer-events:auto;}
+.waves,.waves:before,.waves:after{
+ content:""; position:absolute; inset:-20%;
+ background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.15),transparent 30%),radial-gradient(circle at 70% 60%,rgba(255,255,255,.12),transparent 35%);
+ filter:blur(30px); animation:float 14s ease-in-out infinite alternate;
+}
+.waves:before{animation-duration:18s}.waves:after{animation-duration:22s}
+@keyframes float{from{transform:translate(-5%,-5%) scale(1)}to{transform:translate(5%,5%) scale(1.2)}}
+.title{font-size:clamp(2rem,8vw,4rem);margin-bottom:16px;animation:fadeUp 1s ease both}
+.subtitle{font-size:clamp(1rem,4vw,1.5rem);color:#ffd8ef;animation:fadeUp 1s .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+.big-number{font-size:clamp(5rem,20vw,10rem);font-weight:700;color:#ffd1e8;text-shadow:0 0 25px rgba(255,180,220,.5)}
+.cat{font-size:6rem;animation:walk 3s ease forwards}
+@keyframes walk{from{transform:translateX(-120vw)}to{transform:translateX(0)}}
+.cake{font-size:4rem;margin-top:10px;animation:bounce 1.5s infinite}
+@keyframes bounce{50%{transform:translateY(-12px)}}
+.candle{display:inline-block;transition:all .6s ease}
+.out{opacity:.2; filter:brightness(.5)}
+.count{font-size:clamp(4rem,15vw,8rem);margin:20px 0;color:#ffe88a}
+.wish{font-size:clamp(1.2rem,5vw,2rem);max-width:700px;line-height:1.5;padding:0 20px}
+.hearts{position:absolute;inset:0;pointer-events:none}
+.heart{position:absolute;font-size:24px;animation:rise 4s linear forwards}
+@keyframes rise{from{transform:translateY(100vh);opacity:1}to{transform:translateY(-20vh);opacity:0}}
+button{margin-top:30px;padding:14px 28px;border:none;border-radius:18px;background:#ff85c2;color:#fff;font-size:1rem}
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Ты приглашён ✨</h1>
-    <p>Нажми кнопку ниже</p>
-    <button onclick="alert('Жду тебя 💖')">Открыть</button>
-  </div>
+<div class="waves"></div>
+<div class="hearts" id="hearts"></div>
+
+<section class="screen show" id="s1">
+  <div class="title">Привет ✨</div>
+  <div class="subtitle">У меня для тебя кое-что есть...</div>
+</section>
+
+<section class="screen" id="s2">
+  <div class="big-number">26</div>
+  <div class="subtitle">Сегодня твой день 🎉</div>
+</section>
+
+<section class="screen" id="s3">
+  <div class="cat">🐱</div>
+  <div class="cake"><span class="candle" id="candle">🎂</span></div>
+  <div class="subtitle">Котик принёс торт специально для тебя</div>
+</section>
+
+<section class="screen" id="s4">
+  <div class="subtitle">Подуй через экран 🌬️</div>
+  <div class="count" id="count">3</div>
+</section>
+
+<section class="screen" id="s5">
+  <div class="wish">Желаю тебе хороших друзей, с которыми можно делить и мечты, и шаурму ночью 🌯💛</div>
+  <button onclick="location.reload()">Ещё раз</button>
+</section>
+
+<script>
+const screens=[...document.querySelectorAll('.screen')];
+function show(i){screens.forEach(s=>s.classList.remove('show'));screens[i].classList.add('show')}
+setTimeout(()=>show(1),2500);
+setTimeout(()=>show(2),5200);
+setTimeout(()=>show(3),9000);
+const count=document.getElementById('count');
+const candle=document.getElementById('candle');
+setTimeout(()=>count.textContent='2',10000);
+setTimeout(()=>count.textContent='1',11000);
+setTimeout(()=>{candle.classList.add('out');count.textContent='✨';spawnHearts();},12000);
+setTimeout(()=>show(4),13500);
+function spawnHearts(){
+ const box=document.getElementById('hearts');
+ for(let i=0;i<30;i++){
+  const h=document.createElement('div');
+  h.className='heart';
+  h.textContent=Math.random()>0.5?'💖':'✨';
+  h.style.left=Math.random()*100+'vw';
+  h.style.animationDelay=Math.random()*2+'s';
+  box.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+ }
+}
+</script>
 </body>
 </html>
